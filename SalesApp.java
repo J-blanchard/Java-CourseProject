@@ -110,6 +110,7 @@ public class SalesApp {
 		System.out.println("Please enter the desired Item Id: ");
 		Scanner input = new Scanner(System.in);
 		String Id = input.nextLine().toUpperCase();
+		//ADD INPUT VALIDATION. Check to see if ID Exists Already
 		System.out.println("Please enter the name of the item: ");
 		String ItemName = input.nextLine();
 		System.out.println("Please enter the price of the item: ");
@@ -135,7 +136,7 @@ public class SalesApp {
 		System.out.println("Enter the Id of the product you would like to delete: ");
 		Scanner input = new Scanner(System.in);
 		String itemId = input.nextLine();
-		//ADD INPUT VALIDATION
+		//ADD INPUT VALIDATION. Check to see if ID Exists
 		String Name = getProductName(itemId);
 		Connection connection = DriverManager.getConnection("jdbc:mysql://localhost:3306/courseproject", "root", "root");
 		Statement stmt = connection.createStatement();
@@ -148,20 +149,15 @@ public class SalesApp {
 
 	//TAKES IN id and returns productName
 	public static String getProductName(String Selectedid) throws SQLException{
-			
+		
+		//Check to see if ID Exists first
 		Connection connection = DriverManager.getConnection("jdbc:mysql://localhost:3306/courseproject", "root", "root");
 		Statement stmt = connection.createStatement();
 		String query = "Select * from product where productId =" + "\"" + Selectedid +"\";";
 		ResultSet rs = stmt.executeQuery(query);
 
-				rs.next();
-				String id = rs.getString(1);
-				String itemName = rs.getString(2);
-				Double price = rs.getDouble(3);
-				int quantity = rs.getInt(4);
-				// System.out.println(id + " //  " + itemName + " //  " + price + " //  " + quantity);
-			
-
+			rs.next();
+			String itemName = rs.getString(2);
 		connection.close();
 
 		return itemName;
@@ -182,17 +178,5 @@ public class SalesApp {
 	}
 	
 
-}
-class Product{
-
-	public String Id;
-	public String itemName;
-	public double price;
-	public int quantity;
-	
-	public Product() {
-		
-		
-	}
 }
 
