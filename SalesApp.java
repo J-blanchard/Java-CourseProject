@@ -1,27 +1,28 @@
 import java.util.*;
+import java.sql.*;
 import java.util.HashMap;
-import java.util.logging.FileHandler;
-import java.util.logging.ConsoleHandler;
-import java.util.logging.Handler;
 import java.util.logging.Logger;
 import java.io.IOException;
 import java.util.logging.Level;
-import java.util.logging.LogManager;
 
 public class SalesApp {
 	
 	private final static Logger LOGGER = Logger.getLogger(MyLogger.class.getName());
 	public static HashMap<String, Object> map = new HashMap<String, Object>();
+	public static Product prod = new Product();
 	//test
-	public static void main(String[] args) throws SecurityException, IOException{
-		 	
-		LOGGER.info("Logger Name: "+LOGGER.getName());
+	public static void main(String[] args) throws SecurityException, IOException, SQLException{
+			
+		// System.out.println( "Results: " + getProductName("A1")); 
+		
+		// LOGGER.info("Logger Name: "+LOGGER.getName());
 		
 	        try{
 	        	System.out.println("Welcome to the sales application!\n");
 	    		//calls the navigation method
+				getProductPrice("A2");
 	    		mainMenu();
-	    		LOGGER.info("info msg");
+	    		// LOGGER.info("info msg");
 	            
 	        }catch(Exception ex){
 	            LOGGER.log(Level.SEVERE, "Exception occurred", ex);
@@ -29,44 +30,48 @@ public class SalesApp {
 	 
 		}
 	
-	
-	public static void mainMenu() {
+	//-----------------------------------------------------------MAIN MENU----------------------------------------------------------------------//
+	public static void mainMenu() throws SQLException {
 		
 		System.out.println("Please select what you would like to do:\n");
-		System.out.println("Enter 1 to purchase an item.");
-		System.out.println("Enter 2 to add a new item.");
-		System.out.println("Enter 3 to remove an item.");
-		System.out.println("Enter 4 to exit.");
+		System.out.println("[1: Purchase an item.]");
+		System.out.println("[2: Add a new item.]");
+		System.out.println("[3: Remove an item.]");
+		System.out.println("[4: Exit application.]");
 		Scanner input = new Scanner(System.in);
 		int selection = input.nextInt();
 		if (selection == 1) {
 			purchaseItem();
 		}
 		if(selection == 2) {
-			addItem(map);
+			addItem();
 		}
 		if (selection == 3) {
-			removeItem(map);
+			removeItem();
 		}
 		if (selection == 4) {
 			System.out.println("Thank you, enjoy your day!");
 		}
 		else {
-			System.out.println("Selection was invalid please choose from the following options:" + 2/0);
+			System.out.println("Selection was invalid please choose from the following options:");
 			mainMenu();
 		}//test
 	}
-	public static void purchaseItem() {
+
+
+
+	// ---------------------------------------------------------------PURCHASE ITEM-----------------------------------------------------------//
+	public static void purchaseItem() throws SQLException {
 		String selectedItem;
 		String confirm;
 		double payment;
-		System.out.println("______|    A  	|    B    |    C    |    D    |\n");
-		System.out.println("   1  |  item1  |  item2  |  item3  |  item4  |\n");
-		System.out.println("   2  |  item5  |  item6  |  item7  |  item8  |\n");
-		System.out.println("   3  |  item9  |  item10 |  item11 |  item12 |\n");
-		System.out.println("   4  |  item13 |  item14 |  item15 |  item16 |\n");
-		System.out.println("Please select an item to purchase: "
-				+ " (Ex. Enter B1 to select item2)");
+		System.out.println("\nSNACKS FOR PURCHASE");
+		System.out.println("___________________");
+		System.out.println("|[A1: " + getProductName("A1") +  "] | [A2: " + getProductName("A2") + "] | [A3: " + getProductName("A3") + "] | [A4: " + getProductName("A4") +"]|");
+		System.out.println("|[A1: " + getProductName("A1") +  "] | [A2: " + getProductName("A2") + "] | [A3: " + getProductName("A3") + "] | [A4: " + getProductName("A4") +"]|");
+		System.out.println("|[A1: " + getProductName("A1") +  "] | [A2: " + getProductName("A2") + "] | [A3: " + getProductName("A3") + "] | [A4: " + getProductName("A4") +"]|");
+		System.out.println("|[A1: " + getProductName("A1") +  "] | [A2: " + getProductName("A2") + "] | [A3: " + getProductName("A3") + "] | [A4: " + getProductName("A4") +"]|");
+		System.out.println("Please select an item to purchase: " + " (Ex. Enter A1 to select " + getProductName("A1") +")");
 		Scanner input = new Scanner(System.in);
 		selectedItem = input.nextLine().toUpperCase();
 		if(selectedItem.length() != 2) {
@@ -76,7 +81,7 @@ public class SalesApp {
 		else {
 		
 			//check to see if the input value is correct
-			System.out.println("You have selected item " + selectedItem + ", " + map.get(selectedItem)+ ". Is this selection correct? (Enter Y/N)");
+			System.out.println("You have selected item " + selectedItem + ", " + getProductName(selectedItem) + ". Is this selection correct? (Enter Y/N)");
 			confirm = input.nextLine().toUpperCase();
 			System.out.println(confirm);
 			
@@ -84,49 +89,98 @@ public class SalesApp {
 			//needed to make input a char in order for the conditional statement below to work as intended.
 			char[] confirmed = confirm.toCharArray();
 			if( confirmed[0] == 'Y') {
-				System.out.println("The price of " + map.get(selectedItem) + " is: $2.00. Please enter payment at this time");
-				System.out.println("Total Amount Due: $2.00");
+				System.out.println("The price of " + getProductName(selectedItem) + " is: $" + getProductPrice(selectedItem) + ". Please enter payment at this time");
+				System.out.println("Total Amount Due: $" + getProductPrice(selectedItem)+ "...");
 				payment = input.nextDouble();
-				System.out.println("amount Received: " + payment);
-				System.out.println("Thank You! Here is your change: $0.00");
+				System.out.println("Amount Received: $" + payment);
+				double change = payment - getProductPrice(selectedItem);
+				System.out.println("Thank You! Here is your change: $" + change);
 				mainMenu();
 			}
-			//if input is incorrect, then 
 			else {
 				System.out.println("Please re-enter your selection");
 				purchaseItem();	
 			}
 		}
 	}
-	public static void addItem(HashMap<String, Object> map) {
-		Product product = new Product();
+
+	//-------------------------------------------------------------------ADDS NEW Product---------------------------------------------------//
+	public static void addItem() throws SQLException {
+		
 		System.out.println("Please enter the desired Item Id: ");
 		Scanner input = new Scanner(System.in);
-		product.Id = input.nextLine().toUpperCase();
+		String Id = input.nextLine().toUpperCase();
 		System.out.println("Please enter the name of the item: ");
-		product.itemName = input.nextLine();
+		String ItemName = input.nextLine();
 		System.out.println("Please enter the price of the item: ");
-		product.price = input.nextDouble();
+			Double price = input.nextDouble();
 		System.out.println("Please enter the quantity of the item in stock: ");
-		product.quantity = input.nextInt();
+			int quantity = input.nextInt();
+
+		Connection connection = DriverManager.getConnection("jdbc:mysql://localhost:3306/courseproject", "root", "root");
+		Statement stmt = connection.createStatement();
+		String query = "INSERT INTO Product VALUES (\"" + Id + "\",\"" + ItemName + "\"," + price + "," + quantity + ");";
+		stmt.executeUpdate(query);	
 		
-		map.put(product.Id, product);
-		
-		System.out.println("You have successfully added the following item:" + product.itemName);
+		System.out.println("You have successfully added the following item: " + getProductName(Id));
 		
 		mainMenu();
 		
 		
 	}
-	public static void removeItem(HashMap<String, Object> map) {
-		String itemId;
+
+	//--------------------------------------------------------------------REMOVES ITEM---------------------------------------------------//
+	public static void removeItem() throws SQLException {
+		
 		System.out.println("Enter the Id of the product you would like to delete: ");
 		Scanner input = new Scanner(System.in);
-		itemId = input.nextLine();
-		map.remove(itemId);
-		System.out.println("You have successfully removed the following item:" + map.get(itemId));
+		String itemId = input.nextLine();
+		//ADD INPUT VALIDATION
+		String Name = getProductName(itemId);
+		Connection connection = DriverManager.getConnection("jdbc:mysql://localhost:3306/courseproject", "root", "root");
+		Statement stmt = connection.createStatement();
+		String query = "DELETE FROM Product WHERE ProductId =" + "\"" + itemId + "\";";
+		stmt.executeUpdate(query);
+
+		System.out.println("You have successfully removed the following item:" + Name);
 		mainMenu();
 	}
+
+	//TAKES IN id and returns productName
+	public static String getProductName(String Selectedid) throws SQLException{
+			
+		Connection connection = DriverManager.getConnection("jdbc:mysql://localhost:3306/courseproject", "root", "root");
+		Statement stmt = connection.createStatement();
+		String query = "Select * from product where productId =" + "\"" + Selectedid +"\";";
+		ResultSet rs = stmt.executeQuery(query);
+
+				rs.next();
+				String id = rs.getString(1);
+				String itemName = rs.getString(2);
+				Double price = rs.getDouble(3);
+				int quantity = rs.getInt(4);
+				// System.out.println(id + " //  " + itemName + " //  " + price + " //  " + quantity);
+			
+
+		connection.close();
+
+		return itemName;
+	}
+	public static Double getProductPrice(String selectedID) throws SQLException{
+			
+		Connection connection = DriverManager.getConnection("jdbc:mysql://localhost:3306/courseproject", "root", "root");
+		Statement stmt = connection.createStatement();
+		String query = "Select * from product where productId =" + "\"" + selectedID +"\";";
+		ResultSet rs = stmt.executeQuery(query);
+
+				rs.next();
+				Double price = rs.getDouble(3);
+			
+		connection.close();
+
+		return price;
+	}
+	
 
 }
 class Product{
@@ -141,3 +195,4 @@ class Product{
 		
 	}
 }
+
