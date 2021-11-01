@@ -9,7 +9,6 @@ public class SalesApp {
 	
 	private final static Logger LOGGER = Logger.getLogger(MyLogger.class.getName());
 	public static HashMap<String, Object> map = new HashMap<String, Object>();
-	public static Product prod = new Product();
 	//test
 	public static void main(String[] args) throws SecurityException, IOException, SQLException{
 			
