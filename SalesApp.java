@@ -13,7 +13,7 @@ public class SalesApp {
 	
 	public static void main(String[] args) throws SecurityException, IOException, SQLException{
 			
-		// System.out.println( "Results: " + getProductName("A1")); 
+		System.out.println( "Results: " + getProductName("A3")); 
 		
 		// LOGGER.info("Logger Name: "+LOGGER.getName());
 		
@@ -39,8 +39,11 @@ public class SalesApp {
 		System.out.println("[4: Remove an item.]");
 		System.out.println("[5: View transaction report.]");
 		System.out.println("[6: Exit application.]");
-		Scanner input = new Scanner(System.in);
+	try{
+			Scanner input = new Scanner(System.in);
 		int selection = input.nextInt();
+		
+		
 		if (selection == 1) {
 			purchaseItem();
 		}
@@ -61,9 +64,17 @@ public class SalesApp {
 		}
 		else {
 			System.out.println("Selection was invalid please choose from the following options:");
+			System.out.println("Input must be a number 1-6...");
 			mainMenu();
-		}//test
+		}
 	}
+	catch(Exception e){
+		System.out.println("Error....Please try again.");
+		
+
+		mainMenu();
+	}
+}
 
 
 
@@ -77,9 +88,9 @@ public class SalesApp {
 		System.out.println("\nSNACKS FOR PURCHASE");
 		System.out.println("___________________");
 		System.out.println("|[A1: " + getProductName("A1") +  "] | [A2: " + getProductName("A2") + "] | [A3: " + getProductName("A3") + "] | [A4: " + getProductName("A4") +"]|");
-		System.out.println("|[A1: " + getProductName("A1") +  "] | [A2: " + getProductName("A2") + "] | [A3: " + getProductName("A3") + "] | [A4: " + getProductName("A4") +"]|");
-		System.out.println("|[A1: " + getProductName("A1") +  "] | [A2: " + getProductName("A2") + "] | [A3: " + getProductName("A3") + "] | [A4: " + getProductName("A4") +"]|");
-		System.out.println("|[A1: " + getProductName("A1") +  "] | [A2: " + getProductName("A2") + "] | [A3: " + getProductName("A3") + "] | [A4: " + getProductName("A4") +"]|");
+		System.out.println("|[B1: " + getProductName("B1") +  "] | [B2: " + getProductName("B2") + "] | [B3: " + getProductName("B3") + "] | [B4: " + getProductName("B4") +"]|");
+		System.out.println("|[C1: " + getProductName("C1") +  "] | [C2: " + getProductName("C2") + "] | [C3: " + getProductName("C3") + "] | [C4: " + getProductName("C4") +"]|");
+		System.out.println("|[D1: " + getProductName("D1") +  "] | [D2: " + getProductName("D2") + "] | [D3: " + getProductName("D3") + "] | [D4: " + getProductName("D4") +"]|");
 		System.out.println("Please select an item to purchase: " + " (Ex. Enter A1 to select " + getProductName("A1") +")");
 		Scanner input = new Scanner(System.in);
 		selectedItem = input.nextLine().toUpperCase();
@@ -158,7 +169,6 @@ public class SalesApp {
 		System.out.println("Please enter the desired Item Id: ");
 		Scanner input = new Scanner(System.in);
 		String Id = input.nextLine().toUpperCase();
-		//ADD INPUT VALIDATION. Check to see if ID Exists Already
 		System.out.println("Please enter the name of the item: ");
 		String ItemName = input.nextLine();
 		System.out.println("Please enter the price of the item: ");
@@ -184,7 +194,6 @@ public class SalesApp {
 		System.out.println("Please enter the Item Id of the Product you would like to update: ");
 		Scanner input = new Scanner(System.in);
 		String Id = input.nextLine().toUpperCase();
-		//ADD INPUT VALIDATION. Check to see if ID Exists
 		System.out.println("What would you like to update?");
 		System.out.println("[1: All.]");
 		System.out.println("[2: Item ID.]");
@@ -272,7 +281,6 @@ public class SalesApp {
 		System.out.println("Enter the Id of the product you would like to delete: ");
 		Scanner input = new Scanner(System.in);
 		String itemId = input.nextLine();
-		//ADD INPUT VALIDATION. Check to see if ID Exists
 		String Name = getProductName(itemId);
 		Connection connection = DriverManager.getConnection("jdbc:mysql://localhost:3306/courseproject", "root", "root");
 		Statement stmt = connection.createStatement();
@@ -342,12 +350,12 @@ public class SalesApp {
 			return itemName;
 		}
 		else{
-			return "N/A";
+			return "Out of Stock";
 		}
 				
 			}
 			
-		return "Empty";
+		return "N/A";
 	}
 	public static Double getProductPrice(String selectedID) throws SQLException{
 			
